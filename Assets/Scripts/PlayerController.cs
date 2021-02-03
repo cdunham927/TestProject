@@ -14,8 +14,14 @@ public class PlayerController : MonoBehaviour
     float hp;
     public Image healthBar;
 
+    public Text moneyText;
+    public int money;
+    GameController cont;
+
     private void Awake()
     {
+        money = PlayerPrefs.GetInt("money", 0);
+        cont = FindObjectOfType<GameController>();
         bod = GetComponent<Rigidbody2D>();
 
         hp = maxHp;
@@ -40,6 +46,8 @@ public class PlayerController : MonoBehaviour
         }
 
         healthBar.fillAmount = (hp / maxHp);
+
+        moneyText.text = "x" + money.ToString();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -47,6 +55,16 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             hp -= 15;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Coin"))
+        {
+            money++;
+            //Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 }
