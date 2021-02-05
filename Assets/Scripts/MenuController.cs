@@ -21,6 +21,13 @@ public class MenuController : MonoBehaviour
     public void LoadCurrentLevel()
     {
         PlayerPrefs.SetInt("money", FindObjectOfType<PlayerController>().money);
+        PlayerPrefs.Save();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ResetData()
+    {
+        PlayerPrefs.DeleteAll();
+        FindObjectOfType<PlayerController>().money = 0;
     }
 }

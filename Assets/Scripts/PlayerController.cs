@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     public Text moneyText;
     public int money;
     GameController cont;
+    public float lerpSpd;
 
     private void Awake()
     {
@@ -29,6 +30,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * lerpSpd);
+
         input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
         if (input.x != 0)
