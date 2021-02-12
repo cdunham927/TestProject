@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,15 +10,25 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D bod;
     Vector2 input;
     public GameObject ball;
-    public float maxHp;
+    public int maxHp;
     [SerializeField]
-    float hp;
+    int hp;
     public Image healthBar;
 
+    public TextMeshProUGUI tmText;
     public Text moneyText;
     public int money;
     GameController cont;
     public float lerpSpd;
+
+    public GameObject healthParent;
+    public GameObject hpImage;
+
+    public float iframeTime = 0.3f;
+    float iframes;
+
+    public ParticleSystem bloodParticles;
+    public int burstAmt;
 
     private void Awake()
     {
@@ -26,6 +37,21 @@ public class PlayerController : MonoBehaviour
         bod = GetComponent<Rigidbody2D>();
 
         hp = maxHp;
+        for (int i = 0; i < hp; i++)
+        {
+            AddHeart();
+        }
+    }
+
+    void AddHeart()
+    {
+        GameObject h = Instantiate(hpImage);
+        h.transform.SetParent(healthParent.transform);
+    }
+
+    void RemoveHeart()
+    {
+        Destroy(healthParent.transform.GetChild(0).gameObject);
     }
 
     void Update()
@@ -53,14 +79,39 @@ public class PlayerController : MonoBehaviour
         healthBar.fillAmount = (hp / maxHp);
 
         moneyText.text = "x" + money.ToString();
+        tmText.text = "x" + money.ToString();
+
+        if (iframes > 0) iframes -= Time.deltaTime;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            hp -= 15;
+            TakeDamage(1);
         }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        if (iframes <= 0)
+        {
+            for (int i = 0; i < dmg; i++)
+            {
+                hp -= dmg;
+                RemoveHeart();
+
+                if (hp <= 0) Die();
+            }
+
+            bloodParticles.Emit(burstAmt);
+            iframes = iframeTime;
+        }
+    }
+
+    void Die()
+    {
+        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

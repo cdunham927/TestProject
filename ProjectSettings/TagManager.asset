@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Coin
   - Goal
+  - Projectile
   layers:
   - Default
   - TransparentFX
