@@ -844,7 +844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &842148577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -857,7 +857,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b20a53d3fa3bd344a9404f2d7e47e663, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  money: 0
+  enemyArray: []
+  timeBetweenSpawns: 0
+  xRangeLow: 0.25
+  xRangeHigh: 3
+  paused: 0
+  pauseUI: {fileID: 0}
 --- !u!4 &842148578
 Transform:
   m_ObjectHideFlags: 0

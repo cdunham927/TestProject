@@ -30,11 +30,17 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem bloodParticles;
     public int burstAmt;
 
+    public float timeBetweenShots = 0.1f;
+    float shootCools;
+    public GameObject bulSpawn;
+    Animator anim;
+
     private void Awake()
     {
         money = PlayerPrefs.GetInt("money", 0);
         cont = FindObjectOfType<GameController>();
         bod = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
 
         hp = maxHp;
         for (int i = 0; i < hp; i++)
@@ -71,9 +77,19 @@ public class PlayerController : MonoBehaviour
             bod.AddForce(Vector2.up * spd * input.y * Time.deltaTime);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && shootCools <= 0)
         {
-            Instantiate(ball, transform.position, Quaternion.identity);
+            Shoot();
+        }
+
+        if (Input.GetMouseButton(0) && shootCools <= 0)
+        {
+            ShootSpread();
+        }
+
+        if (Input.GetMouseButton(1) && shootCools <= 0)
+        {
+            SwordAttack();
         }
 
         healthBar.fillAmount = (hp / maxHp);
@@ -82,6 +98,30 @@ public class PlayerController : MonoBehaviour
         tmText.text = "x" + money.ToString();
 
         if (iframes > 0) iframes -= Time.deltaTime;
+        if (shootCools > 0) shootCools -= Time.deltaTime;
+    }
+
+    public void SwordAttack()
+    {
+        anim.Play("PlayerAttack");
+
+        shootCools = timeBetweenShots;
+    }
+
+    public void Shoot()
+    {
+        Instantiate(ball, bulSpawn.transform.position, transform.rotation);
+        shootCools = timeBetweenShots;
+    }
+
+    public void ShootSpread()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Instantiate(ball, bulSpawn.transform.position, transform.rotation * Quaternion.Euler(0, 0, -20f + (10f * i)));
+        }
+
+        shootCools = timeBetweenShots;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

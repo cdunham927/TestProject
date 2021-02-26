@@ -26,4 +26,12 @@ public class RollABallPlayer : MonoBehaviour
             bod.AddForce(Vector3.forward * spd * input.y * Time.deltaTime);
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
+        {
+            Destroy(other.gameObject);
+        }
+    }
 }

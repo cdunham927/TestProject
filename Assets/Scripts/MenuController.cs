@@ -18,11 +18,18 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene(s);
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
     public void LoadCurrentLevel()
     {
-        PlayerPrefs.SetInt("money", FindObjectOfType<PlayerController>().money);
-        PlayerPrefs.Save();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (PlayerPrefs.HasKey("money")) {
+            PlayerPrefs.SetInt("money", FindObjectOfType<PlayerController>().money);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     public void ResetData()

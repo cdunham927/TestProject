@@ -15,6 +15,7 @@ public class TestEnemy : MonoBehaviour
     float attackCools;
     public float timeBetweenAttacks = 0.3f;
     public GameObject enemyProjectile;
+    float iframes;
 
     private void Awake()
     {
@@ -41,6 +42,7 @@ public class TestEnemy : MonoBehaviour
         }
 
         if (attackCools > 0) attackCools -= Time.deltaTime;
+        if (iframes > 0) iframes -= Time.deltaTime;
     }
 
     void Attack()
@@ -51,12 +53,27 @@ public class TestEnemy : MonoBehaviour
         attackCools = timeBetweenAttacks;
     }
 
+    public void TakeDamage(int dmg)
+    {
+        if (iframes <= 0)
+        {
+            anim.Play("SquidHurt");
+            hp -= dmg;
+
+            if (hp <= 0) Disable();
+            iframes = 0.3f;
+        }
+    }
+
+    void Disable()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void OnMouseDown()
     {
         anim.Play("SquidHurt");
 
-        hp--;
-
-        if (hp <= 0) gameObject.SetActive(false);
+        TakeDamage(1);
     }
 }

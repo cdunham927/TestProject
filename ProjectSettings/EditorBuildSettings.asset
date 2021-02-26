@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Pong.unity
     guid: fa9792a5cef38854cab06c327f29bf16
+  - enabled: 1
+    path: Assets/Scenes/Shmup.unity
+    guid: cc8543396ad112349932f79a9200e186
   m_configObjects: {}

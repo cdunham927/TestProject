@@ -18,6 +18,8 @@ public class EnemyProjectile : MonoBehaviour
     {
         hasHurt = false;
         bod.AddForce(transform.up * spd);
+
+        Invoke("Disable", 2f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -26,7 +28,21 @@ public class EnemyProjectile : MonoBehaviour
         {
             collision.GetComponent<PlayerController>().TakeDamage(damage);
             hasHurt = true;
-            gameObject.SetActive(false);
+            Invoke("Disable", 0.001f);
         }
+        if (collision.CompareTag("Wall"))
+        {
+            Invoke("Disable", 0.001f);
+        }
+    }
+
+    void Disable()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        CancelInvoke();
     }
 }
