@@ -17,6 +17,7 @@ public class TDEnemyController : MonoBehaviour
     bool hasHurt = false;
     public float dmg;
     public float moneyDrop;
+    public GameObject explosion;
 
     private void Awake()
     {
@@ -81,6 +82,7 @@ public class TDEnemyController : MonoBehaviour
                 cont.GiveMoney(moneyDrop);
                 hasHurt = true;
             }
+            Instantiate(explosion, transform.position, Quaternion.Euler(0, 0, Random.Range(0, 360)));
             gameObject.SetActive(false);
         }
     }

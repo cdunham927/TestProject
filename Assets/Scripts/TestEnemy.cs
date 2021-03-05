@@ -16,12 +16,21 @@ public class TestEnemy : MonoBehaviour
     public float timeBetweenAttacks = 0.3f;
     public GameObject enemyProjectile;
     float iframes;
+    public float chaseRange;
+    Vector3 startPos;
+    Vector3 wanderPos;
+    bool chasing;
+    public float wanderRadius;
+    float wanderDistance;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
         bod = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<PlayerController>();
+        chasing = false;
+        startPos = transform.position;
+        wanderPos = transform.position * Random.insideUnitCircle * Random.Range(0, wanderRadius);
 
         hp = maxHp;
     }
@@ -31,7 +40,11 @@ public class TestEnemy : MonoBehaviour
         if (player != null)
         {
             distance = Vector2.Distance(transform.position, player.transform.position);
-            if (distance >= attackRange)
+            /*if (distance >= attackRange && distance <= chaseRange)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, player.transform.position, spd * Time.deltaTime);
+            }*/
+            if (distance >= attackRange && chasing)
             {
                 transform.position = Vector3.MoveTowards(transform.position, player.transform.position, spd * Time.deltaTime);
             }
@@ -39,6 +52,11 @@ public class TestEnemy : MonoBehaviour
             {
                 Attack();
             }
+
+            //if (distance > chaseRange) transform.position = Vector3.MoveTowards(transform.position, startPos, spd * Time.deltaTime);
+            if (!chasing) transform.position = Vector3.MoveTowards(transform.position, wanderPos, spd * Time.deltaTime);
+            wanderDistance = Vector2.Distance(transform.position, wanderPos);
+            if (!chasing && wanderDistance <= 0.1f) wanderPos = transform.position * Random.insideUnitCircle * Random.Range(0, wanderRadius);
         }
 
         if (attackCools > 0) attackCools -= Time.deltaTime;
@@ -75,5 +93,39 @@ public class TestEnemy : MonoBehaviour
         anim.Play("SquidHurt");
 
         TakeDamage(1);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            chasing = true;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            chasing = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            chasing = false;
+            wanderPos = transform.position * Random.insideUnitCircle * Random.Range(0, wanderRadius);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, wanderPos);
+        }
     }
 }

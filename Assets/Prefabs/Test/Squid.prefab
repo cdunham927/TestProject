@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4489343050818989902}
   - component: {fileID: 4489343050818989903}
   - component: {fileID: 4489343050818989897}
+  - component: {fileID: 5000472633443857178}
   m_Layer: 0
   m_Name: Squid
   m_TagString: Enemy
@@ -122,6 +123,8 @@ MonoBehaviour:
   attackRange: 7
   timeBetweenAttacks: 0.6
   enemyProjectile: {fileID: 856188443671180342, guid: a775d1d7b94238648b282ce043fc7dad, type: 3}
+  chaseRange: 14
+  wanderRadius: 3
 --- !u!61 &4489343050818989903
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -169,3 +172,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!58 &5000472633443857178
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4489343050818989875}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 12

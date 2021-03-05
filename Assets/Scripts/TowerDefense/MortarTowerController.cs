@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CannonController : BaseTower
+public class MortarTowerController : BaseTower
 {
     public override void Shoot()
     {
