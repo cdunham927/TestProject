@@ -10,16 +10,23 @@ public class BreakoutBallController : MonoBehaviour
     BreakoutGameController cont;
     Vector3 startPos;
 
+    PhysicsMaterial2D mat;
+
     private void Awake()
     {
         startPos = transform.position;
         cont = FindObjectOfType<BreakoutGameController>();
         bod = GetComponent<Rigidbody2D>();
+
+        mat = bod.sharedMaterial;
     }
 
     private void OnEnable()
     {
         Invoke("PushBall", 2f);
+
+        mat.bounciness = 1f;
+        mat.friction = 0f;
     }
 
     void PushBall()

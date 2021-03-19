@@ -1056,6 +1056,7 @@ MonoBehaviour:
   xRangeHigh: 3
   paused: 0
   pauseUI: {fileID: 892872037}
+  radius: 30.2
 --- !u!4 &461326678
 Transform:
   m_ObjectHideFlags: 0

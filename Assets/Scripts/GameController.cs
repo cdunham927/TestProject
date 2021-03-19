@@ -17,9 +17,16 @@ public class GameController : MonoBehaviour
     public bool paused = false;
     public GameObject pauseUI;
 
+    PlayerController player;
+
+    //Spawn randomly within circle
+    public float radius = 10f;
+
     private void Awake()
     {
         spawnCools = timeBetweenSpawns;
+
+        player = FindObjectOfType<PlayerController>();
     }
 
     private void Update()
@@ -63,30 +70,96 @@ public class GameController : MonoBehaviour
     void SpawnEnemy()
     {
         bounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0f));
-        int xx = Random.Range(0, 4);
-        if (xx == 0)
+        bool oov = false;
+        while (oov == false)
         {
-            //Spawns above player
-            spawnPoint = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), bounds.y + Random.Range(0.25f, 3f), 0f);
-        }
-        else if (xx == 1)
-        {
-            //Spawns below player
-            spawnPoint = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), -bounds.y - Random.Range(0.25f, 3f), 0f);
-        }
-        else if (xx == 2)
-        {
-            //Spawns to the right of the player
-            spawnPoint = new Vector3(bounds.x + Random.Range(xRangeLow, xRangeHigh), Random.Range(-bounds.y + 1f, bounds.y - 1f), 0f);
-        }
-        else if (xx == 3)
-        {
-            //Spawns to the left of the player
-            spawnPoint = new Vector3(-bounds.x - Random.Range(xRangeLow, xRangeHigh), Random.Range(-bounds.y + 1f, bounds.y - 1f), 0f);
+            int xx = Random.Range(0, 4);
+            //int xx = 0;
+            if (xx == 0)
+            {
+                //Spawns above player
+                //Circle spawn point
+                spawnPoint = Random.insideUnitCircle * radius;
+                if (spawnPoint.y > bounds.y + 0.25f)
+                {
+                    oov = true;
+                    break;
+                }
+                else
+                {
+                    xx += Random.Range(1, 4);
+                    xx %= 4;
+                    spawnPoint = Random.insideUnitCircle * radius;
+                }
+                //spawnPoint = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), bounds.y + Random.Range(0.25f, 3f), 0f);
+            }
+            else if (xx == 1)
+            {
+                //Spawns below player
+                //spawnPoint = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), -bounds.y - Random.Range(0.25f, 3f), 0f);
+                //Circle spawn point
+                spawnPoint = Random.insideUnitCircle * radius;
+                if (spawnPoint.y < -bounds.y - 0.25f)
+                {
+                    oov = true;
+                    break;
+                }
+                else
+                {
+                    xx += Random.Range(1, 4);
+                    xx %= 4;
+                    spawnPoint = Random.insideUnitCircle * radius;
+                }
+            }
+            else if (xx == 2)
+            {
+                //Spawns to the right of the player
+                //spawnPoint = new Vector3(bounds.x + Random.Range(xRangeLow, xRangeHigh), Random.Range(-bounds.y + 1f, bounds.y - 1f), 0f);
+                //Circle spawn point
+                spawnPoint = Random.insideUnitCircle * radius;
+                if (spawnPoint.x > bounds.x + 0.25f)
+                {
+                    oov = true;
+                    break;
+                }
+                else
+                {
+                    xx += Random.Range(1, 4);
+                    xx %= 4;
+                    spawnPoint = Random.insideUnitCircle * radius;
+                }
+            }
+            else if (xx == 3)
+            {
+                //Spawns to the left of the player
+                //spawnPoint = new Vector3(-bounds.x - Random.Range(xRangeLow, xRangeHigh), Random.Range(-bounds.y + 1f, bounds.y - 1f), 0f);
+                //Circle spawn point
+                spawnPoint = Random.insideUnitCircle * radius;
+                if (spawnPoint.x < -bounds.x - 0.25f)
+                {
+                    oov = true;
+                    break;
+                }
+                else
+                {
+                    xx += Random.Range(1, 4);
+                    xx %= 4;
+                    spawnPoint = Random.insideUnitCircle * radius;
+                }
+            }
         }
 
-        //Spawn the enemy
-        Instantiate(enemyArray[Random.Range(0, enemyArray.Length)], spawnPoint, Quaternion.identity);
-        spawnCools = timeBetweenSpawns;
+        if (oov)
+        {
+            //Spawn the enemy
+            Instantiate(enemyArray[Random.Range(0, enemyArray.Length)], spawnPoint, Quaternion.identity);
+            spawnCools = timeBetweenSpawns;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(Vector3.zero, radius);
     }
 }
