@@ -136,3 +136,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spd: 800
   damage: 1
+  particlePrefab: {fileID: 425227980346835978, guid: d435a2266db302c4a84be4665d94a657, type: 3}
+  particleInstance: {fileID: 0}
+  partAmt: 15

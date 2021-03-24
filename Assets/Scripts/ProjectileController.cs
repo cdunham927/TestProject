@@ -8,10 +8,15 @@ public class ProjectileController : MonoBehaviour
     Rigidbody2D bod;
     public int damage = 1;
     bool hasHurt;
+    public ParticleSystem particlePrefab;
+    public ParticleSystem particleInstance;
+    public int partAmt;
 
     private void Awake()
     {
         bod = GetComponent<Rigidbody2D>();
+        particleInstance = Instantiate(particlePrefab);
+        particleInstance.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -38,6 +43,10 @@ public class ProjectileController : MonoBehaviour
 
     void Disable()
     {
+        particleInstance.transform.position = transform.position;
+        particleInstance.transform.rotation = transform.rotation;
+        particleInstance.gameObject.SetActive(true);
+        particleInstance.Emit(partAmt);
         gameObject.SetActive(false);
     }
 
