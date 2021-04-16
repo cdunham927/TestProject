@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
-    public float spd;
+    public float lowSpd;
+    public float highSpd;
+    float spd;
     Rigidbody2D bod;
     public int damage = 1;
     bool hasHurt;
@@ -22,6 +24,7 @@ public class ProjectileController : MonoBehaviour
     private void OnEnable()
     {
         hasHurt = false;
+        spd = Random.Range(lowSpd, highSpd);
         bod.AddForce(transform.up * spd);
 
         Invoke("Disable", 2f);

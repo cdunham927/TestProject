@@ -25,9 +25,20 @@ public class ShmupPlayerController : MonoBehaviour
 
     public GameObject flash;
 
+    AudioSource src;
+    public AudioClip clip1;
+    public AudioClip clip2;
+    public float vol1;
+    public float vol2;
+    AudioClip curClip;
+
     private void Awake()
     {
+        src = GetComponent<AudioSource>();
         bod = GetComponent<Rigidbody2D>();
+        //Set starting sound and volume
+        curClip = clip1;
+        src.volume = vol1;
 
         hp = maxHp;
         for (int i = 0; i < hp; i++)
@@ -70,6 +81,22 @@ public class ShmupPlayerController : MonoBehaviour
 
         if (cools > 0) cools -= Time.deltaTime;
         if (iframes > 0) iframes -= Time.deltaTime;
+
+        if (Application.isEditor)
+        {
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                curClip = clip2;
+                src.volume = vol2;
+                src.clip = clip2;
+            }
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                curClip = clip1;
+                src.volume = vol1;
+                src.clip = clip1;
+            }
+        }
     }
 
     public void TakeDamage(int dmg)
@@ -102,6 +129,8 @@ public class ShmupPlayerController : MonoBehaviour
             Instantiate(flash, bulletSpawn[i].transform.position, Quaternion.identity);
         }
 
+        //src.Play();
+        src.PlayOneShot(curClip);
         cools = timeBetweenShots;
     }
 }

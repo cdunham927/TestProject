@@ -8,7 +8,7 @@ public class MovePlayer : MonoBehaviour
     Rigidbody2D bod;
     public float spd;
     public float lerpSpd = 10f;
-
+    public bool rotate = false;
 
     // Start is called before the first frame update
     void Start()
@@ -19,9 +19,12 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * lerpSpd);
+        if (rotate)
+        {
+            Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * lerpSpd);
+        }
 
         input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 

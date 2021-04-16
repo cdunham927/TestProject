@@ -134,7 +134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 708f07452d14cd649b397d6ff24b73c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spd: 800
+  lowSpd: 800
+  highSpd: 800
   damage: 1
   particlePrefab: {fileID: 425227980346835978, guid: d435a2266db302c4a84be4665d94a657, type: 3}
   particleInstance: {fileID: 0}
