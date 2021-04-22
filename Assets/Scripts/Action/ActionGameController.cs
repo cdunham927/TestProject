@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class ActionGameController : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class ActionGameController : MonoBehaviour
     [HideInInspector]
     public List<Item> consumableItems = new List<Item>();
 
+    public float dmg = 5;
+    public GameObject[] spawnPoints;
 
     private void Awake()
     {
@@ -42,6 +45,29 @@ public class ActionGameController : MonoBehaviour
                 case Item.rarity.legendary:
                     legendaryItems.Add(shopItems[i]);
                     break;
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (Application.isEditor)
+        {
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                var ob = FindObjectsOfType<MonoBehaviour>().OfType<IDamageable<float>>();
+                foreach (IDamageable<float> d in ob)
+                {
+                    d.Damage(dmg);
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                var ob = FindObjectsOfType<MonoBehaviour>().OfType<IKillable>();
+                foreach (IKillable d in ob)
+                {
+                    d.Die();
+                }
             }
         }
     }

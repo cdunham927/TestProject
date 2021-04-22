@@ -19,6 +19,7 @@ public class Item : MonoBehaviour
 
     private void Awake()
     {
+        player = FindObjectOfType<ActionPlayerController>();
         inventory = FindObjectOfType<Inventory>();
         rend = GetComponent<SpriteRenderer>();
         rend.sprite = iSprite;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ActionPlayerController : MonoBehaviour
+public class ActionPlayerController : MonoBehaviour, IDamageable<float>, IKillable
 {
     [Header("Stats")]
     public float maxHp;
@@ -40,10 +40,19 @@ public class ActionPlayerController : MonoBehaviour
     Rigidbody2D bod;
     public float spd;
     public bool rotate = false;
+
+    Animator anim;
+    SpriteRenderer rend;
+    //0 = down, 1 = sideways, 2 = up
+    int lookDir = 0;
+    bool moving = false;
+    public GameObject meleeObj;
     
     private void Awake()
     {
         bod = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        rend = GetComponent<SpriteRenderer>();
 
         expToNext = CalculateExp(level);
 
@@ -59,7 +68,7 @@ public class ActionPlayerController : MonoBehaviour
         money = startMoney;
     }
 
-    public void TakeDamage(float amt)
+    public void Damage(float amt)
     {
         hp -= amt;
         if (hp <= 0) Die();
@@ -126,7 +135,7 @@ public class ActionPlayerController : MonoBehaviour
                 if (r == 0) atk++;
                 else if (r == 1) def++;
                 else if (r == 2) spd += 200f;
-                else maxHp += 10l;
+                else maxHp += 10;
 
                 statsAdded = true;
             }
@@ -147,7 +156,7 @@ public class ActionPlayerController : MonoBehaviour
         money += amt;
     }
 
-    void Die()
+    public void Die()
     {
         gameObject.SetActive(false);
     }
@@ -167,20 +176,59 @@ public class ActionPlayerController : MonoBehaviour
 
         input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        if (input.x != 0)
-        {
-            bod.AddForce(Vector2.right * spd * input.x * Time.deltaTime);
-        }
         if (input.y != 0)
         {
             bod.AddForce(Vector2.up * spd * input.y * Time.deltaTime);
         }
+        if (input.x != 0)
+        {
+            bod.AddForce(Vector2.right * spd * input.x * Time.deltaTime);
+        }
+
+        moving = (input.x != 0 || input.y != 0);
+
+        if (input.y < 0)
+        {
+            lookDir = 0;
+            meleeObj.transform.localPosition = new Vector3(0, -1, 0);
+            meleeObj.transform.localScale = new Vector3(1.25f, 1, 1);
+        }
+        else if (input.x > 0)
+        {
+            lookDir = 1;
+            meleeObj.transform.localPosition = new Vector3(1, 0, 0);
+            meleeObj.transform.localScale = new Vector3(1, 1.25f, 1);
+        }
+        else if (input.x < 0)
+        {
+            lookDir = 1;
+            meleeObj.transform.localPosition = new Vector3(-1, 0, 0);
+            meleeObj.transform.localScale = new Vector3(1, 1.25f, 1);
+        }
+        else if (input.y > 0)
+        {
+            lookDir = 2;
+            meleeObj.transform.localPosition = new Vector3(0, 1, 0);
+            meleeObj.transform.localScale = new Vector3(1.25f, 1, 1);
+        }
+
+        if (input.x < 0)
+        {
+            rend.flipX = true;
+        }
+        else if (input.x > 0)
+        {
+            rend.flipX = false;
+        }
+
+        anim.SetInteger("dir", lookDir);
+        anim.SetBool("moving", moving);
 
         if (Application.isEditor)
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-                TakeDamage(15f);
+                Damage(15f);
             }
 
             if (Input.GetKey(KeyCode.M))
@@ -193,5 +241,16 @@ public class ActionPlayerController : MonoBehaviour
                 AddExp(5);
             }
         }
+    }
+
+    public void SwingAttack()
+    {
+        anim.SetBool("attacking", true);
+        Invoke("ResetAttack", 0.1f);
+    }
+
+    void ResetAttack()
+    {
+        anim.SetBool("attacking", false);
     }
 }
