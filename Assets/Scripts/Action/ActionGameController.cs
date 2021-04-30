@@ -19,9 +19,15 @@ public class ActionGameController : MonoBehaviour
 
     public float dmg = 5;
     public GameObject[] spawnPoints;
+    public GameObject enemy;
+    public List<GameObject> enemies;
+    public float timeBetweenSpawns = 8f;
+    float cooldown;
 
     private void Awake()
     {
+        spawnPoints = GameObject.FindGameObjectsWithTag("Checkpoint");
+
         for (int i = 0; i < shopItems.Count; i++)
         {
 
@@ -51,6 +57,10 @@ public class ActionGameController : MonoBehaviour
 
     private void Update()
     {
+        if (cooldown > 0) cooldown -= Time.deltaTime;
+
+        if (cooldown <= 0) SpawnEnemy();
+
         if (Application.isEditor)
         {
             if (Input.GetKeyDown(KeyCode.V))
@@ -63,13 +73,44 @@ public class ActionGameController : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.X))
             {
-                var ob = FindObjectsOfType<MonoBehaviour>().OfType<IKillable>();
-                foreach (IKillable d in ob)
+                ActionEnemyController[] en = FindObjectsOfType<ActionEnemyController>();
+                foreach(ActionEnemyController e in en)
                 {
-                    d.Die();
+                    e.Die();
                 }
+                //var ob = FindObjectsOfType<MonoBehaviour>().OfType<IKillable>();
+                //foreach (IKillable d in ob)
+                //{
+                    //d.Die();
+                //}
             }
         }
+    }
+
+    public void SpawnEnemy()
+    {
+        GameObject o = GetEnemy();
+        o.transform.position = spawnPoints[Random.Range(0, spawnPoints.Length)].transform.position;
+        o.SetActive(true);
+
+        cooldown = timeBetweenSpawns;
+    }
+    
+    public GameObject GetEnemy()
+    {
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            if (!enemies[i].activeInHierarchy)
+            {
+                return enemies[i];
+            }
+        }
+
+        GameObject en = Instantiate(enemy, transform.position, Quaternion.identity);
+        enemies.Add(en);
+        en.SetActive(false);
+
+        return en;
     }
 
     public ShopItem GetRandomItem(List<ShopItem> iList)

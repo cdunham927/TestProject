@@ -5,11 +5,12 @@ using System.Linq;
 
 public class ActionMeleeHitBox : MonoBehaviour
 {
+    public string target;
     public float atk;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag(target))
         {
             var ob = collision.GetComponent<IDamageable<float>>();
             ob.Damage(atk);
@@ -18,7 +19,7 @@ public class ActionMeleeHitBox : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag(target))
         {
             var ob = collision.GetComponent<IDamageable<float>>();
             ob.Damage(atk);

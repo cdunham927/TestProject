@@ -11,6 +11,7 @@ public class ActionPlayerController : MonoBehaviour, IDamageable<float>, IKillab
     public float lerpSpd = 10f;
     public Image healthUI;
     public Text moneyText;
+    public Text expText;
     public float startMoney;
     float curMoney;
     public float money;
@@ -47,6 +48,9 @@ public class ActionPlayerController : MonoBehaviour, IDamageable<float>, IKillab
     int lookDir = 0;
     bool moving = false;
     public GameObject meleeObj;
+
+    public float iframeTime;
+    float iframes;
     
     private void Awake()
     {
@@ -70,8 +74,12 @@ public class ActionPlayerController : MonoBehaviour, IDamageable<float>, IKillab
 
     public void Damage(float amt)
     {
-        hp -= amt;
-        if (hp <= 0) Die();
+        if (iframes <= 0)
+        {
+            hp -= amt;
+            if (hp <= 0) Die();
+            iframes = iframeTime;
+        }
     }
 
     public float CalculateExp(int lvl)
@@ -166,6 +174,7 @@ public class ActionPlayerController : MonoBehaviour, IDamageable<float>, IKillab
         healthUI.fillAmount = Mathf.Lerp(healthUI.fillAmount, hp / maxHp, lerpSpd * Time.deltaTime);
         curMoney = Mathf.RoundToInt(Mathf.Lerp(curMoney, money, Time.deltaTime * lerpSpd));
         moneyText.text = "x" + curMoney.ToString();
+        expText.text = "Level " + level.ToString() + "     Exp: " + experience.ToString() + "/" + expToNext.ToString();
 
         if (rotate)
         {
@@ -223,6 +232,7 @@ public class ActionPlayerController : MonoBehaviour, IDamageable<float>, IKillab
 
         anim.SetInteger("dir", lookDir);
         anim.SetBool("moving", moving);
+        if (iframes > 0) iframes -= Time.deltaTime;
 
         if (Application.isEditor)
         {
